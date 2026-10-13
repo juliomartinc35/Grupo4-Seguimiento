@@ -22,8 +22,10 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        // Servicios Singleton
-        builder.Services.AddSingleton<DatabaseService>();
+        // Servicios
+        builder.Services.AddSingleton<IDatabaseService>(_ =>
+            new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "Asistencias.db3")));
+        builder.Services.AddSingleton<IDialogService, ShellDialogService>();
 
         // Módulo Gestión de Personas
         builder.Services.AddTransient<GestionPersonasViewModel>();
@@ -33,9 +35,7 @@ public static class MauiProgram
         builder.Services.AddTransient<GestionClasesViewModel>();
         builder.Services.AddTransient<GestionClasesPage>();
 
-        // =========================================================
-        // MÓDULO ESTUDIANTES / RIESGO ACADÉMICO (AGREGAR ESTAS DOS LÍNEAS)
-        // =========================================================
+        // Módulo Estudiantes / Riesgo Académico
         builder.Services.AddTransient<EstudianteListViewModel>();
         builder.Services.AddTransient<EstudianteListPage>();
 
