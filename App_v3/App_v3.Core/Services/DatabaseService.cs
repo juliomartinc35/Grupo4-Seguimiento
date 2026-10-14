@@ -11,7 +11,7 @@ public class DatabaseService : IDatabaseService
 
     public DatabaseService(string dbPath) => _dbPath = dbPath;
 
-    private async Task<SQLiteAsyncConnection> InitAsync()
+    private async Task<SQLiteAsyncConnection> InitAsync(bool sembrar = true)
     {
         if (_db is not null) return _db;
 
@@ -25,7 +25,7 @@ public class DatabaseService : IDatabaseService
                 SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache);
 
             await db.CreateTablesAsync<Persona, Clase, ConfiguracionRiesgo>();
-            await SembrarDatosAsync(db);
+            if (sembrar) await SembrarDatosAsync(db);
             _db = db;
             return _db;
         }
@@ -98,6 +98,6 @@ public class DatabaseService : IDatabaseService
             _initLock.Release();
         }
 
-        await InitAsync();
+        await InitAsync(sembrar: false);
     }
 }
