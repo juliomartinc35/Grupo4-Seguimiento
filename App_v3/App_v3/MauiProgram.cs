@@ -39,6 +39,10 @@ public static class MauiProgram
         builder.Services.AddTransient<EstudianteListViewModel>();
         builder.Services.AddTransient<EstudianteListPage>();
 
+        // Modulo Umbrales de Riesgo (H7)
+        builder.Services.AddTransient<ConfiguracionRiesgoViewModel>();
+        builder.Services.AddTransient<ConfiguracionRiesgoPage>();
+
         return builder.Build();
     }
 }
