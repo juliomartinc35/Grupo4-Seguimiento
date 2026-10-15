@@ -7,17 +7,17 @@ namespace App_v3.ViewModels
 {
     public class EstudianteListViewModel : BindableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _db;
 
-        public ObservableCollection<EstudianteItemViewModel> Estudiantes { get; set; } = new();
+        public ObservableCollection<EstudianteItemViewModel> Estudiantes { get; } = new();
 
         public ICommand CargarEstudiantesCommand { get; }
         public ICommand SeedEstudiantesCommand { get; }
         public ICommand ResetDatabaseCommand { get; }
 
-        public EstudianteListViewModel(DatabaseService databaseService)
+        public EstudianteListViewModel(IDatabaseService db)
         {
-            _databaseService = databaseService;
+            _db = db;
 
             CargarEstudiantesCommand = new Command(async () => await CargarEstudiantesAsync());
             SeedEstudiantesCommand = new Command(async () => await CargarSeedDataAsync());
@@ -28,12 +28,12 @@ namespace App_v3.ViewModels
         {
             try
             {
-                var listaBase = await _databaseService.GetEstudiantesAsync();
+                var personas = await _db.GetAllAsync<Persona>();
                 Estudiantes.Clear();
 
-                foreach (var est in listaBase)
+                foreach (var est in personas.Where(p => p.Rol == RolPersona.Estudiante))
                 {
-                    // Simulamos valores aleatorios deterministas según el Id para probar indicadores de riesgo
+                    // Valores simulados deterministas según el Id, para probar los indicadores de riesgo
                     double promedioSimulado = 3.5 + (est.Id * 1.3) % 6.5;
                     int asistenciaSimulada = 50 + (est.Id * 7) % 50;
 
@@ -60,14 +60,14 @@ namespace App_v3.ViewModels
                     string nom = nombres[random.Next(nombres.Length)];
                     string ape = apellidos[random.Next(apellidos.Length)];
 
-                    var estudiante = new Estudiante
+                    await _db.SaveAsync(new Persona
                     {
                         Legajo = $"LEG-{2000 + i}",
-                        NombreCompleto = $"{nom} {ape}",
-                        Email = $"{nom.ToLower()}.{ape.ToLower()}{i}@escuela.edu.ar"
-                    };
-
-                    await _databaseService.SaveEstudianteAsync(estudiante);
+                        Nombre = nom,
+                        Apellido = ape,
+                        Email = $"{nom.ToLower()}.{ape.ToLower()}{i}@escuela.edu.ar",
+                        Rol = RolPersona.Estudiante
+                    });
                 }
 
                 await CargarEstudiantesAsync();
@@ -82,7 +82,7 @@ namespace App_v3.ViewModels
         {
             try
             {
-                await _databaseService.ResetDatabaseAsync();
+                await _db.ResetAsync();
                 Estudiantes.Clear();
             }
             catch (Exception ex)

@@ -33,6 +33,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+  		<ProjectReference Include="..\App_v3.Core\App_v3.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<!-- Recursos visuales -->
 		<MauiIcon Color="#512BD4" ForegroundFile="Resources\AppIcon\appiconfg.svg" Include="Resources\AppIcon\appicon.svg" />
 		<MauiSplashScreen BaseSize="128,128" Color="#512BD4" Include="Resources\Splash\splash.svg" />

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="App_v3.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -17,6 +17,9 @@
 
         <Tab Title="Clases" Icon="dotnet_bot.png">
             <ShellContent ContentTemplate="{DataTemplate views:GestionClasesPage}" />
+        </Tab>
+        <Tab Title="Umbrales" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate views:ConfiguracionRiesgoPage}" />
         </Tab>
     </TabBar>
 
