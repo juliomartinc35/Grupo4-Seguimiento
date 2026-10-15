@@ -1,4 +1,4 @@
-﻿using App_v3.Core;
+﻿using App_v3.Models;
 
 namespace App_v3.Tests;
 
@@ -6,16 +6,26 @@ namespace App_v3.Tests;
 public sealed class ConfiguracionRiesgoTests
 {
     [TestMethod]
-    public void CA7_1_ConfigurarRegistraLosNuevosUmbrales()
+    public void CA7_1_UmbralesPorDefectoSonValidos()
     {
         var config = new ConfiguracionRiesgo();
 
-        config.Configurar(new Umbrales(2, 4, 2, 5));
+        Assert.IsTrue(config.EsValida(out var mensaje));
+        Assert.AreEqual(string.Empty, mensaje);
+    }
 
-        Assert.AreEqual(2, config.Actual.InasistenciasMedio);
-        Assert.AreEqual(4, config.Actual.InasistenciasAlto);
-        Assert.AreEqual(2, config.Actual.TpsNoEntregadosMedio);
-        Assert.AreEqual(5, config.Actual.TpsNoEntregadosAlto);
+    [TestMethod]
+    public void CA7_1_UmbralesPersonalizadosCoherentesSonValidos()
+    {
+        var config = new ConfiguracionRiesgo
+        {
+            InasistenciasMedio = 2,
+            InasistenciasAlto = 4,
+            TpsNoEntregadosMedio = 2,
+            TpsNoEntregadosAlto = 5
+        };
+
+        Assert.IsTrue(config.EsValida(out _));
     }
 
     [TestMethod]
@@ -55,7 +65,7 @@ public sealed class ConfiguracionRiesgoTests
         var config = new ConfiguracionRiesgo();
         var antes = config.CalcularNivel(inasistencias: 4, tpsNoEntregados: 0);
 
-        config.Configurar(new Umbrales(InasistenciasAlto: 4));
+        config.InasistenciasAlto = 4;
         var despues = config.CalcularNivel(inasistencias: 4, tpsNoEntregados: 0);
 
         Assert.AreEqual(NivelRiesgo.Medio, antes);
@@ -71,22 +81,24 @@ public sealed class ConfiguracionRiesgoTests
     public void CA7_3_RechazaValoresContradictorios(
         int inasistenciasMedio, int inasistenciasAlto, int tpsMedio, int tpsAlto)
     {
-        var config = new ConfiguracionRiesgo();
+        var config = new ConfiguracionRiesgo
+        {
+            InasistenciasMedio = inasistenciasMedio,
+            InasistenciasAlto = inasistenciasAlto,
+            TpsNoEntregadosMedio = tpsMedio,
+            TpsNoEntregadosAlto = tpsAlto
+        };
 
-        Assert.Throws<UmbralesInvalidosException>(
-            () => config.Configurar(new Umbrales(inasistenciasMedio, inasistenciasAlto, tpsMedio, tpsAlto)));
+        Assert.IsFalse(config.EsValida(out var mensaje));
+        Assert.IsFalse(string.IsNullOrEmpty(mensaje));
     }
 
     [TestMethod]
-    public void CA7_3_ConfiguracionInvalidaNoPisaLaAnterior()
+    public void CA7_3_InformaQueElUmbralMedioDebeSerMenorQueElAlto()
     {
-        var config = new ConfiguracionRiesgo();
-        config.Configurar(new Umbrales(2, 4, 2, 5));
+        var config = new ConfiguracionRiesgo { InasistenciasMedio = 6, InasistenciasAlto = 3 };
 
-        Assert.Throws<UmbralesInvalidosException>(
-            () => config.Configurar(new Umbrales(6, 3, 1, 3)));
-
-        Assert.AreEqual(2, config.Actual.InasistenciasMedio);
-        Assert.AreEqual(4, config.Actual.InasistenciasAlto);
+        Assert.IsFalse(config.EsValida(out var mensaje));
+        Assert.AreEqual("El umbral Medio de inasistencias debe ser menor que el Alto.", mensaje);
     }
 }
