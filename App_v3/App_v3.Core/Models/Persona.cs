@@ -2,8 +2,7 @@
 
 namespace App_v3.Models;
 
-[Table("Estudiante")]
-public class Persona
+public class Persona : IEntidad
 {
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
@@ -18,14 +17,13 @@ public class Persona
 
     public string Telefono { get; set; } = string.Empty;
 
-    public string Rol { get; set; } = string.Empty; // "Estudiante" o "Docente"
+    public RolPersona Rol { get; set; } = RolPersona.Estudiante;
 
     public DateTime FechaIngreso { get; set; } = DateTime.Now;
 
     public string EstadoAlerta { get; set; } = "Normal"; // "Normal", "Riesgo Moderado", "Riesgo Alto"
 
-    // [Ignore] le indica a SQLite que NO cree esta columna física en la tabla,
-    // pero tu interfaz XAML la puede seguir usando normalmente para mostrar el nombre completo.
+    // [Ignore]: SQLite no crea esta columna, pero el XAML la puede usar igual.
     [Ignore]
     public string NombreCompleto => $"{Nombre} {Apellido}";
 }

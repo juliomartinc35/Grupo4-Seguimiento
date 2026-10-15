@@ -4,15 +4,15 @@ namespace App_v3.ViewModels
 {
     public class EstudianteItemViewModel : BindableObject
     {
-        public Estudiante Estudiante { get; set; }
-        public double Promedio { get; set; }
-        public int PorcentajeAsistencia { get; set; }
+        // Se mantiene el nombre "Estudiante" para no tocar el XAML
+        // (Estudiante.NombreCompleto, Estudiante.Legajo, Estudiante.Email)
+        public Persona Estudiante { get; }
+        public double Promedio { get; }
+        public int PorcentajeAsistencia { get; }
 
-        // Regla de negocio para determinar si un alumno está en riesgo académico
-        // (Ejemplo: Promedio menor a 6.0 O Asistencia menor al 75%)
-        public bool EnRiesgo => Promedio < 6.0 || PorcentajeAsistencia < 75;
+        public bool EnRiesgo => RiesgoAcademico.EnRiesgo(Promedio, PorcentajeAsistencia);
 
-        public EstudianteItemViewModel(Estudiante estudiante, double promedio, int porcentajeAsistencia)
+        public EstudianteItemViewModel(Persona estudiante, double promedio, int porcentajeAsistencia)
         {
             Estudiante = estudiante;
             Promedio = promedio;
