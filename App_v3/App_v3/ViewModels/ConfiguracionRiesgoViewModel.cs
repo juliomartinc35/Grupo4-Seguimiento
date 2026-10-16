@@ -1,100 +1,114 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using App_v3.Models;
+using App_v3.Seguimiento;
 using App_v3.Services;
 
 namespace App_v3.ViewModels;
 
-public class ConfiguracionRiesgoViewModel : INotifyPropertyChanged
+/// <summary>H7: configurar los umbrales de riesgo (reemplaza la versión anterior).</summary>
+public class ConfiguracionRiesgoViewModel : ObservableBase
 {
     private readonly IDatabaseService _db;
     private readonly IDialogService _dialog;
+    private readonly RiesgoService _riesgo;
     private int _id;
 
-    private int _inasistenciasMedio;
-    public int InasistenciasMedio
-    {
-        get => _inasistenciasMedio;
-        set => SetProperty(ref _inasistenciasMedio, value);
-    }
-
-    private int _inasistenciasAlto;
-    public int InasistenciasAlto
-    {
-        get => _inasistenciasAlto;
-        set => SetProperty(ref _inasistenciasAlto, value);
-    }
-
-    private int _tpsNoEntregadosMedio;
-    public int TpsNoEntregadosMedio
-    {
-        get => _tpsNoEntregadosMedio;
-        set => SetProperty(ref _tpsNoEntregadosMedio, value);
-    }
-
-    private int _tpsNoEntregadosAlto;
-    public int TpsNoEntregadosAlto
-    {
-        get => _tpsNoEntregadosAlto;
-        set => SetProperty(ref _tpsNoEntregadosAlto, value);
-    }
-
-    public ICommand GuardarCommand { get; }
-
-    public ConfiguracionRiesgoViewModel(IDatabaseService db, IDialogService dialog)
+    public ConfiguracionRiesgoViewModel(IDatabaseService db, IDialogService dialog, RiesgoService riesgo)
     {
         _db = db;
         _dialog = dialog;
-
+        _riesgo = riesgo;
         GuardarCommand = new Command(async () => await GuardarAsync());
-
-        _ = CargarAsync();
     }
 
-    private async Task CargarAsync()
-    {
-        var lista = await _db.GetAllAsync<ConfiguracionRiesgo>();
-        var config = lista.FirstOrDefault() ?? new ConfiguracionRiesgo();
+    private string _inasistenciasMedio = string.Empty;
+    public string InasistenciasMedio { get => _inasistenciasMedio; set => Set(ref _inasistenciasMedio, value); }
 
-        _id = config.Id;
-        InasistenciasMedio = config.InasistenciasMedio;
-        InasistenciasAlto = config.InasistenciasAlto;
-        TpsNoEntregadosMedio = config.TpsNoEntregadosMedio;
-        TpsNoEntregadosAlto = config.TpsNoEntregadosAlto;
+    private string _inasistenciasAlto = string.Empty;
+    public string InasistenciasAlto { get => _inasistenciasAlto; set => Set(ref _inasistenciasAlto, value); }
+
+    private string _tpsNoEntregadosMedio = string.Empty;
+    public string TpsNoEntregadosMedio { get => _tpsNoEntregadosMedio; set => Set(ref _tpsNoEntregadosMedio, value); }
+
+    private string _tpsNoEntregadosAlto = string.Empty;
+    public string TpsNoEntregadosAlto { get => _tpsNoEntregadosAlto; set => Set(ref _tpsNoEntregadosAlto, value); }
+
+    private string _resumenNiveles = string.Empty;
+    public string ResumenNiveles { get => _resumenNiveles; private set => Set(ref _resumenNiveles, value); }
+
+    public ICommand GuardarCommand { get; }
+
+    public async Task CargarAsync()
+    {
+        try
+        {
+            var config = (await _db.GetAllAsync<ConfiguracionRiesgo>()).FirstOrDefault() ?? new ConfiguracionRiesgo();
+
+            _id = config.Id;
+            InasistenciasMedio = config.InasistenciasMedio.ToString();
+            InasistenciasAlto = config.InasistenciasAlto.ToString();
+            TpsNoEntregadosMedio = config.TpsNoEntregadosMedio.ToString();
+            TpsNoEntregadosAlto = config.TpsNoEntregadosAlto.ToString();
+
+            await ActualizarResumenAsync();
+        }
+        catch (Exception ex)
+        {
+            await _dialog.AlertAsync("No se pudo cargar la configuración", ex.Message);
+        }
+    }
+
+    // CA 7.2: muestra cuántos estudiantes quedan en cada nivel con los umbrales vigentes
+    private async Task ActualizarResumenAsync()
+    {
+        var filas = await _riesgo.CalcularAsync(DateTime.Today);
+        int altos = filas.Count(f => f.Nivel == NivelRiesgo.Alto);
+        int medios = filas.Count(f => f.Nivel == NivelRiesgo.Medio);
+        int bajos = filas.Count(f => f.Nivel == NivelRiesgo.Bajo);
+
+        ResumenNiveles =
+            $"Con estos umbrales: {altos} en riesgo Alto, {medios} Medio y {bajos} Bajo ({filas.Count} estudiantes activos).";
     }
 
     private async Task GuardarAsync()
     {
+        if (!int.TryParse(InasistenciasMedio?.Trim(), out var im) ||
+            !int.TryParse(InasistenciasAlto?.Trim(), out var ia) ||
+            !int.TryParse(TpsNoEntregadosMedio?.Trim(), out var tm) ||
+            !int.TryParse(TpsNoEntregadosAlto?.Trim(), out var ta))
+        {
+            await _dialog.AlertAsync("Valores inválidos", "Ingresá números enteros en los cuatro umbrales.");
+            return;
+        }
+
         var config = new ConfiguracionRiesgo
         {
             Id = _id,
-            InasistenciasMedio = InasistenciasMedio,
-            InasistenciasAlto = InasistenciasAlto,
-            TpsNoEntregadosMedio = TpsNoEntregadosMedio,
-            TpsNoEntregadosAlto = TpsNoEntregadosAlto
+            InasistenciasMedio = im,
+            InasistenciasAlto = ia,
+            TpsNoEntregadosMedio = tm,
+            TpsNoEntregadosAlto = ta
         };
 
-        // CA 7.3: no se guardan valores contradictorios
+        // CA 7.3: los valores contradictorios no se guardan
         if (!config.EsValida(out var mensaje))
         {
             await _dialog.AlertAsync("Umbrales inválidos", mensaje);
             return;
         }
 
-        // CA 7.1: se registra la nueva configuración
-        await _db.SaveAsync(config);
-        _id = config.Id;
+        try
+        {
+            // CA 7.1: se registra la nueva configuración
+            await _db.SaveAsync(config);
+            _id = config.Id;
 
-        await _dialog.AlertAsync("Umbrales guardados", "La configuración de riesgo se actualizó correctamente.");
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void SetProperty<T>(ref T campo, T valor, [CallerMemberName] string? nombre = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(campo, valor)) return;
-        campo = valor;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nombre));
+            await ActualizarResumenAsync();
+            await _dialog.AlertAsync("Umbrales guardados", "La configuración se guardó. " + ResumenNiveles);
+        }
+        catch (Exception ex)
+        {
+            await _dialog.AlertAsync("No se pudo guardar", ex.Message);
+        }
     }
 }

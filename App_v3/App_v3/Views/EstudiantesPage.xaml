@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App_v3.Views.EstudiantesPage"
+             Title="Estudiantes">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="SegPaginaClaro">#F4F5F7</Color>
+            <Color x:Key="SegPaginaOscuro">#121212</Color>
+            <Color x:Key="SegTarjetaClaro">#FFFFFF</Color>
+            <Color x:Key="SegTarjetaOscuro">#1E1E1E</Color>
+            <Color x:Key="SegBordeClaro">#E3E6EA</Color>
+            <Color x:Key="SegBordeOscuro">#2E2E2E</Color>
+            <Color x:Key="SegTextoClaro">#1F2937</Color>
+            <Color x:Key="SegTextoOscuro">#F3F4F6</Color>
+            <Color x:Key="SegSuaveClaro">#6B7280</Color>
+            <Color x:Key="SegSuaveOscuro">#9CA3AF</Color>
+            <Color x:Key="SegAvisoFondoClaro">#FEF3C7</Color>
+            <Color x:Key="SegAvisoFondoOscuro">#3B2F0B</Color>
+            <Color x:Key="SegAvisoTextoClaro">#92400E</Color>
+            <Color x:Key="SegAvisoTextoOscuro">#FCD34D</Color>
+            <Color x:Key="SegBotonSecundarioClaro">#E5E7EB</Color>
+            <Color x:Key="SegBotonSecundarioOscuro">#2E2E2E</Color>
+
+            <Style x:Key="Tarjeta" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SegTarjetaClaro}, Dark={StaticResource SegTarjetaOscuro}}" />
+                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SegBordeClaro}, Dark={StaticResource SegBordeOscuro}}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="12" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="Aviso" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SegAvisoFondoClaro}, Dark={StaticResource SegAvisoFondoOscuro}}" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Padding" Value="14" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="10" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="Titulo" TargetType="Label">
+                <Setter Property="FontSize" Value="22" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
+
+            <Style x:Key="Seccion" TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
+
+            <Style x:Key="Texto" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
+
+            <Style x:Key="Suave" TargetType="Label">
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegSuaveClaro}, Dark={StaticResource SegSuaveOscuro}}" />
+            </Style>
+
+            <Style x:Key="TextoAviso" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegAvisoTextoClaro}, Dark={StaticResource SegAvisoTextoOscuro}}" />
+            </Style>
+
+            <Style x:Key="Campo" TargetType="Entry">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+                <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource SegSuaveClaro}, Dark={StaticResource SegSuaveOscuro}}" />
+            </Style>
+
+            <Style x:Key="Selector" TargetType="Picker">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+                <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource SegSuaveClaro}, Dark={StaticResource SegSuaveOscuro}}" />
+            </Style>
+
+            <Style x:Key="Fecha" TargetType="DatePicker">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
+
+            <Style x:Key="BotonPrimario" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#512BD4" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="44" />
+            </Style>
+
+            <Style x:Key="BotonSecundario" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SegBotonSecundarioClaro}, Dark={StaticResource SegBotonSecundarioOscuro}}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid BackgroundColor="{AppThemeBinding Light={StaticResource SegPaginaClaro}, Dark={StaticResource SegPaginaOscuro}}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="14">
+                <Label Text="Estudiantes" Style="{StaticResource Titulo}" />
+
+                <Border Style="{StaticResource Tarjeta}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Alta de estudiante" Style="{StaticResource Seccion}" />
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="6">
+                            <Entry Grid.Row="0" Grid.Column="0" Placeholder="Legajo *" Text="{Binding Legajo}" Style="{StaticResource Campo}" />
+                            <Entry Grid.Row="0" Grid.Column="1" Placeholder="DNI *" Text="{Binding Dni}" Keyboard="Numeric" Style="{StaticResource Campo}" />
+                            <Entry Grid.Row="1" Grid.Column="0" Placeholder="Nombre *" Text="{Binding Nombre}" Style="{StaticResource Campo}" />
+                            <Entry Grid.Row="1" Grid.Column="1" Placeholder="Apellido *" Text="{Binding Apellido}" Style="{StaticResource Campo}" />
+                            <Entry Grid.Row="2" Grid.Column="0" Placeholder="Email *" Text="{Binding Email}" Keyboard="Email" Style="{StaticResource Campo}" />
+                            <Entry Grid.Row="2" Grid.Column="1" Placeholder="Teléfono (opcional)" Text="{Binding Telefono}" Keyboard="Telephone" Style="{StaticResource Campo}" />
+                        </Grid>
+                        <Label Text="* Campos obligatorios" Style="{StaticResource Suave}" />
+                        <Button Text="Guardar" Command="{Binding GuardarCommand}" Style="{StaticResource BotonPrimario}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Tarjeta}">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Nómina" Style="{StaticResource Seccion}" />
+                                <Label Text="{Binding Resumen}" Style="{StaticResource Suave}" />
+                            </VerticalStackLayout>
+                            <Picker Grid.Column="1" Title="Mostrar" ItemsSource="{Binding Filtros}" SelectedItem="{Binding Filtro, Mode=TwoWay}" WidthRequest="140" Style="{StaticResource Selector}" />
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Estudiantes}">
+                            <BindableLayout.EmptyView>
+                                <Label Text="No hay estudiantes para mostrar." Style="{StaticResource Suave}" HorizontalOptions="Center" Margin="0,16" />
+                            </BindableLayout.EmptyView>
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource Tarjeta}" Padding="12">
+                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+                                            <VerticalStackLayout Spacing="3">
+                                                <Label Text="{Binding NombreCompleto}" FontSize="16" FontAttributes="Bold" Style="{StaticResource Texto}" />
+                                                <Label Text="{Binding Identificacion}" Style="{StaticResource Suave}" />
+                                                <Label Text="{Binding Contacto}" Style="{StaticResource Suave}" />
+                                            </VerticalStackLayout>
+                                            <Border Grid.Column="1" BackgroundColor="{Binding ColorEstado}" StrokeThickness="0" Padding="12,6" VerticalOptions="Start">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="14" />
+                                                </Border.StrokeShape>
+                                                <Label Text="{Binding EstadoTexto}" TextColor="White" FontAttributes="Bold" FontSize="12" />
+                                            </Border>
+                                            <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="8">
+                                                <Button Text="Ver ficha" Command="{Binding FichaCommand}" Style="{StaticResource BotonSecundario}" />
+                                                <Button Text="Dar de baja" Command="{Binding BajaCommand}" IsVisible="{Binding PuedeDarDeBaja}" Style="{StaticResource BotonSecundario}" />
+                                                <Button Text="Reactivar" Command="{Binding ReactivarCommand}" IsVisible="{Binding PuedeReactivar}" Style="{StaticResource BotonSecundario}" />
+                                            </HorizontalStackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -1,41 +1,139 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App_v3.Views.ConfiguracionRiesgoPage"
              Title="Umbrales de Riesgo">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <Label Text="Configurar umbrales de riesgo"
-                   FontSize="20"
-                   FontAttributes="Bold" />
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="SegPaginaClaro">#F4F5F7</Color>
+            <Color x:Key="SegPaginaOscuro">#121212</Color>
+            <Color x:Key="SegTarjetaClaro">#FFFFFF</Color>
+            <Color x:Key="SegTarjetaOscuro">#1E1E1E</Color>
+            <Color x:Key="SegBordeClaro">#E3E6EA</Color>
+            <Color x:Key="SegBordeOscuro">#2E2E2E</Color>
+            <Color x:Key="SegTextoClaro">#1F2937</Color>
+            <Color x:Key="SegTextoOscuro">#F3F4F6</Color>
+            <Color x:Key="SegSuaveClaro">#6B7280</Color>
+            <Color x:Key="SegSuaveOscuro">#9CA3AF</Color>
+            <Color x:Key="SegAvisoFondoClaro">#FEF3C7</Color>
+            <Color x:Key="SegAvisoFondoOscuro">#3B2F0B</Color>
+            <Color x:Key="SegAvisoTextoClaro">#92400E</Color>
+            <Color x:Key="SegAvisoTextoOscuro">#FCD34D</Color>
+            <Color x:Key="SegBotonSecundarioClaro">#E5E7EB</Color>
+            <Color x:Key="SegBotonSecundarioOscuro">#2E2E2E</Color>
 
-            <Label Text="Un estudiante pasa a riesgo Medio o Alto cuando alcanza estos valores. El nivel general es el más alto de las dos señales."
-                   FontSize="14"
-                   TextColor="Gray" />
+            <Style x:Key="Tarjeta" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SegTarjetaClaro}, Dark={StaticResource SegTarjetaOscuro}}" />
+                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SegBordeClaro}, Dark={StaticResource SegBordeOscuro}}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="12" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-            <Label Text="Inasistencias" FontSize="18" FontAttributes="Bold" />
+            <Style x:Key="Aviso" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SegAvisoFondoClaro}, Dark={StaticResource SegAvisoFondoOscuro}}" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Padding" Value="14" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="10" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-            <Label Text="Riesgo Medio a partir de:" />
-            <Entry Keyboard="Numeric" Text="{Binding InasistenciasMedio}" />
+            <Style x:Key="Titulo" TargetType="Label">
+                <Setter Property="FontSize" Value="22" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
 
-            <Label Text="Riesgo Alto a partir de:" />
-            <Entry Keyboard="Numeric" Text="{Binding InasistenciasAlto}" />
+            <Style x:Key="Seccion" TargetType="Label">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
 
-            <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
+            <Style x:Key="Texto" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
 
-            <Label Text="Trabajos prácticos vencidos no entregados" FontSize="18" FontAttributes="Bold" />
+            <Style x:Key="Suave" TargetType="Label">
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegSuaveClaro}, Dark={StaticResource SegSuaveOscuro}}" />
+            </Style>
 
-            <Label Text="Riesgo Medio a partir de:" />
-            <Entry Keyboard="Numeric" Text="{Binding TpsNoEntregadosMedio}" />
+            <Style x:Key="TextoAviso" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegAvisoTextoClaro}, Dark={StaticResource SegAvisoTextoOscuro}}" />
+            </Style>
 
-            <Label Text="Riesgo Alto a partir de:" />
-            <Entry Keyboard="Numeric" Text="{Binding TpsNoEntregadosAlto}" />
+            <Style x:Key="Campo" TargetType="Entry">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+                <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource SegSuaveClaro}, Dark={StaticResource SegSuaveOscuro}}" />
+            </Style>
 
-            <Button Text="Guardar umbrales"
-                    Command="{Binding GuardarCommand}"
-                    BackgroundColor="#512BD4"
-                    TextColor="White" />
-        </VerticalStackLayout>
-    </ScrollView>
+            <Style x:Key="Selector" TargetType="Picker">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+                <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource SegSuaveClaro}, Dark={StaticResource SegSuaveOscuro}}" />
+            </Style>
+
+            <Style x:Key="Fecha" TargetType="DatePicker">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+            </Style>
+
+            <Style x:Key="BotonPrimario" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#512BD4" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="44" />
+            </Style>
+
+            <Style x:Key="BotonSecundario" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SegBotonSecundarioClaro}, Dark={StaticResource SegBotonSecundarioOscuro}}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SegTextoClaro}, Dark={StaticResource SegTextoOscuro}}" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="40" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid BackgroundColor="{AppThemeBinding Light={StaticResource SegPaginaClaro}, Dark={StaticResource SegPaginaOscuro}}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="14">
+                <Label Text="Umbrales de riesgo" Style="{StaticResource Titulo}" />
+
+                <Border Style="{StaticResource Tarjeta}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Un estudiante pasa a riesgo Medio o Alto cuando alcanza estos valores. El nivel general es el más alto de las dos señales." Style="{StaticResource Suave}" />
+
+                        <Label Text="Inasistencias" Style="{StaticResource Seccion}" Margin="0,8,0,0" />
+                        <Label Text="Riesgo Medio a partir de:" Style="{StaticResource Texto}" />
+                        <Entry Keyboard="Numeric" Text="{Binding InasistenciasMedio}" Style="{StaticResource Campo}" />
+                        <Label Text="Riesgo Alto a partir de:" Style="{StaticResource Texto}" />
+                        <Entry Keyboard="Numeric" Text="{Binding InasistenciasAlto}" Style="{StaticResource Campo}" />
+
+                        <Label Text="Trabajos prácticos vencidos no entregados" Style="{StaticResource Seccion}" Margin="0,8,0,0" />
+                        <Label Text="Riesgo Medio a partir de:" Style="{StaticResource Texto}" />
+                        <Entry Keyboard="Numeric" Text="{Binding TpsNoEntregadosMedio}" Style="{StaticResource Campo}" />
+                        <Label Text="Riesgo Alto a partir de:" Style="{StaticResource Texto}" />
+                        <Entry Keyboard="Numeric" Text="{Binding TpsNoEntregadosAlto}" Style="{StaticResource Campo}" />
+
+                        <Button Text="Guardar umbrales" Command="{Binding GuardarCommand}" Style="{StaticResource BotonPrimario}" Margin="0,8,0,0" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Tarjeta}">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Niveles actuales" Style="{StaticResource Seccion}" />
+                        <Label Text="{Binding ResumenNiveles}" Style="{StaticResource Texto}" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

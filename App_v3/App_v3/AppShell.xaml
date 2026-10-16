@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="App_v3.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -7,17 +7,26 @@
     Title="Sistema de Alerta Temprana">
 
     <TabBar>
-        <Tab Title="Personas" Icon="dotnet_bot.png">
-            <ShellContent ContentTemplate="{DataTemplate views:GestionPersonasPage}" />
+        <Tab Title="Panel" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate views:PanelPage}" />
         </Tab>
 
-        <Tab Title="Alumnos" Icon="dotnet_bot.png">
-            <ShellContent ContentTemplate="{DataTemplate views:EstudianteListPage}" />
+        <Tab Title="Estudiantes" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate views:EstudiantesPage}" />
         </Tab>
 
-        <Tab Title="Clases" Icon="dotnet_bot.png">
-            <ShellContent ContentTemplate="{DataTemplate views:GestionClasesPage}" />
+        <Tab Title="Asistencia" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate views:AsistenciaPage}" />
         </Tab>
+
+        <Tab Title="Entregas" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate views:EntregasPage}" />
+        </Tab>
+
+        <Tab Title="Calendario" Icon="dotnet_bot.png">
+            <ShellContent ContentTemplate="{DataTemplate views:CalendarioPage}" />
+        </Tab>
+
         <Tab Title="Umbrales" Icon="dotnet_bot.png">
             <ShellContent ContentTemplate="{DataTemplate views:ConfiguracionRiesgoPage}" />
         </Tab>
